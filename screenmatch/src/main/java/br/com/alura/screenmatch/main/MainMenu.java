@@ -1,22 +1,27 @@
 package br.com.alura.screenmatch.main;
 
+import br.com.alura.screenmatch.model.EpisodesData;
 import br.com.alura.screenmatch.model.SeasonData;
 import br.com.alura.screenmatch.model.SeriesData;
 import br.com.alura.screenmatch.service.ConsumeApi;
 import br.com.alura.screenmatch.service.DataConvertion;
 import br.com.alura.screenmatch.service.DataConvertionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 //"https://www.omdbapi.com/?t=gilmore+girls&apikey=6585022c"
+@Service
 public class MainMenu {
     private Scanner reader = new Scanner(System.in);
     private final String ADRESS = "https://www.omdbapi.com/?t=";
     private final String APIKEY = "&apikey=6585022c";
-    private final ConsumeApi consumeApi = new ConsumeApi();
-    private final DataConvertion dataConvertion = new DataConvertionImpl();
+    @Autowired
+    private ConsumeApi consumeApi;
+    @Autowired
+    private DataConvertion dataConvertion;
     public void showMenu() {
         System.out.println("Digit the seri's name for searching: ");
         var serieName = reader.nextLine();
@@ -32,8 +37,7 @@ public class MainMenu {
 				SeasonData seasonData = this.dataConvertion.getDatas(json, SeasonData.class);
 				seasonDataList.add(seasonData);
 			}
-
-			seasonDataList.forEach(System.out::println);
+            seasonDataList.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
 		}
     }
 }

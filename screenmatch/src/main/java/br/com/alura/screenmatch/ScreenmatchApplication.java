@@ -14,6 +14,8 @@ public class ScreenmatchApplication implements CommandLineRunner {
 //	private DataConvertion dataConvertion;
 //	@Autowired
 //	private ConsumeApi consumeApi;
+	@Autowired
+	private MainMenu mainMenu;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ScreenmatchApplication.class, args);
@@ -41,7 +43,6 @@ public class ScreenmatchApplication implements CommandLineRunner {
 //			seasonDataList.forEach(System.out::println);
 //		}
 
-		MainMenu mainMenu = new MainMenu();
-		mainMenu.showMenu();
+		this.mainMenu.showMenu();
 	}
 }
