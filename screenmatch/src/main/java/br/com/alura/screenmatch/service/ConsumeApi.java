@@ -1,11 +1,13 @@
 package br.com.alura.screenmatch.service;
 
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-
+@Service
 public class ConsumeApi {
     public String getDatas(String adress) {
         HttpClient client = HttpClient.newHttpClient();
