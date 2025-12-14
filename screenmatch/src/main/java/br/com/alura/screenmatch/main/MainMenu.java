@@ -37,7 +37,17 @@ public class MainMenu {
 				SeasonData seasonData = this.dataConvertion.getDatas(json, SeasonData.class);
 				seasonDataList.add(seasonData);
 			}
-            seasonDataList.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
+            List<String> episodes = new ArrayList<>();
+            seasonDataList.forEach(s -> s.episodes().forEach(e -> episodes.add(e.title())));
+            //exibindo nomes de episodeos em ordem alfabetica limitado a 10
+            episodes.stream()
+                    .sorted()
+                    .limit(10)
+                    //criando um filtro
+                    .filter(n -> n.contains("Ikki"))
+                    //transformando
+                    .map(n -> n.toUpperCase())
+                    .forEach(System.out::println);
 		}
     }
 }
