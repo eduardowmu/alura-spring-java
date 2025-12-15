@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+
 //"https://www.omdbapi.com/?t=gilmore+girls&apikey=6585022c"
 @Service
 public class MainMenu {
@@ -47,6 +50,18 @@ public class MainMenu {
                     .filter(n -> n.contains("Ikki"))
                     //transformando
                     .map(n -> n.toUpperCase())
+                    .forEach(System.out::println);
+
+            //exibindo lista dos top 5 episodeos de todas as temporadas
+            List<EpisodesData> episodesData = seasonDataList.stream()
+                    .flatMap(t -> t.episodes().stream())
+                    //.collect(Collectors.toList()); //ou pode ser também, porém será
+                    .toList();//uma lista imutável, não poderemos add mais este tipo
+
+            episodesData.stream()
+                    .filter(e -> !e.evaluation().equals("N/A"))
+                    .sorted(Comparator.comparing(EpisodesData::evaluation).reversed())
+                    .limit(5)
                     .forEach(System.out::println);
 		}
     }
