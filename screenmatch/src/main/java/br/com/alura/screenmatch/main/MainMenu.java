@@ -1,5 +1,6 @@
 package br.com.alura.screenmatch.main;
 
+import br.com.alura.screenmatch.model.Episode;
 import br.com.alura.screenmatch.model.EpisodesData;
 import br.com.alura.screenmatch.model.SeasonData;
 import br.com.alura.screenmatch.model.SeriesData;
@@ -63,6 +64,12 @@ public class MainMenu {
                     .sorted(Comparator.comparing(EpisodesData::evaluation).reversed())
                     .limit(5)
                     .forEach(System.out::println);
+
+            List<Episode> episodeList = seasonDataList.stream()
+                    .flatMap(s -> s.episodes().stream().map(e -> new Episode(s.season(), e)))
+                    .collect(Collectors.toList());
+            //desde que a classe tenha o método toString(), isso escreve o objeto da maneira
+            episodeList.forEach(System.out::println);
 		}
     }
 }
