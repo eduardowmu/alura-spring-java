@@ -10,6 +10,7 @@ import br.com.alura.screenmatch.service.DataConvertionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -68,8 +69,12 @@ public class MainMenu {
             List<Episode> episodeList = seasonDataList.stream()
                     .flatMap(s -> s.episodes().stream().map(e -> new Episode(s.season(), e)))
                     .collect(Collectors.toList());
+
             //desde que a classe tenha o método toString(), isso escreve o objeto da maneira
-            episodeList.forEach(System.out::println);
+            episodeList.stream()
+                    .filter(e -> e.getLaunchDate() != null && e.getLaunchDate().isAfter(
+                            LocalDate.of(1985, 1, 1)))
+                    .forEach(System.out::println);
 		}
     }
 }
