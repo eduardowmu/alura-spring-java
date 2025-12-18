@@ -62,8 +62,14 @@ public class MainMenu {
 
             episodesData.stream()
                     .filter(e -> !e.evaluation().equals("N/A"))
+                    //Essa função nos permite observar o que está acontecendo em cada etapa da nossa stream.
+                    .peek(e -> System.out.println("Primeiro filtro(N/A): " + e))
                     .sorted(Comparator.comparing(EpisodesData::evaluation).reversed())
+                    .peek(e -> System.out.println("Ordenação: " + e))
                     .limit(5)
+                    .peek(e -> System.out.println("Limit: " + e))
+                    .map(e -> e.title().toUpperCase())
+                    .peek(e -> System.out.println("Mapeamento: " + e))
                     .forEach(System.out::println);
 
             List<Episode> episodeList = seasonDataList.stream()
