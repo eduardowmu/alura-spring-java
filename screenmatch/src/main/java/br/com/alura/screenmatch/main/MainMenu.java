@@ -63,11 +63,11 @@ public class MainMenu {
             episodesData.stream()
                     .filter(e -> !e.evaluation().equals("N/A"))
                     //Essa função nos permite observar o que está acontecendo em cada etapa da nossa stream.
-                    .peek(e -> System.out.println("Primeiro filtro(N/A): " + e))
+//                    .peek(e -> System.out.println("Primeiro filtro(N/A): " + e))
                     .sorted(Comparator.comparing(EpisodesData::evaluation).reversed())
-                    .peek(e -> System.out.println("Ordenação: " + e))
+//                    .peek(e -> System.out.println("Ordenação: " + e))
                     .limit(5)
-                    .peek(e -> System.out.println("Limit: " + e))
+//                    .peek(e -> System.out.println("Limit: " + e))
                     .map(e -> e.title().toUpperCase())
                     .peek(e -> System.out.println("Mapeamento: " + e))
                     .forEach(System.out::println);
@@ -81,6 +81,12 @@ public class MainMenu {
                     .filter(e -> e.getLaunchDate() != null && e.getLaunchDate().isAfter(
                             LocalDate.of(1985, 1, 1)))
                     .forEach(System.out::println);
+            //encontra o(s) episódio(s)
+            episodeList.stream()
+                    .filter(e -> e.getTitle().contains("Ikki"))
+                    //.findFirst()
+                    .findAny()
+                    .stream().forEach(System.out::println);
 		}
     }
 }
