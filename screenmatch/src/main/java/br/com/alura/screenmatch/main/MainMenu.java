@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 //"https://www.omdbapi.com/?t=gilmore+girls&apikey=6585022c"
@@ -87,6 +84,23 @@ public class MainMenu {
                     //.findFirst()
                     .findAny()
                     .stream().forEach(System.out::println);
+
+            List<Episode> evaluatedEpisodes = episodeList.stream()
+                    .filter(e -> !e.getEvaluation().equals("N/A"))
+                    .collect(Collectors.toList());
+
+            evaluatedEpisodes.forEach(e -> e.setEvaluationNumber(Double.parseDouble(e.getEvaluation())));
+
+            Map<Integer, Double> evaluationPerSeason = evaluatedEpisodes.stream()
+                    .collect(Collectors.groupingBy(Episode::getSeason, Collectors.averagingDouble(Episode::getEvaluationNumber)));
+
+            //System.out.println(evaluationPerSeason);
+
+            DoubleSummaryStatistics statistics = evaluatedEpisodes.stream()
+                    .filter(e -> e.getEvaluationNumber() > 0.0)
+                    .collect(Collectors.summarizingDouble(Episode::getEvaluationNumber));
+
+            System.out.println(statistics);
 		}
     }
 }

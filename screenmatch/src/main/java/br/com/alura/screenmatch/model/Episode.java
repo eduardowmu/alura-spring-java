@@ -7,6 +7,7 @@ public class Episode {
     private String title;
     private Integer episode;
     private String evaluation;
+    private Double evaluationNumber;
     private LocalDate launchDate;
 
     public Episode(Integer season, EpisodesData episodesData) {
@@ -55,6 +56,14 @@ public class Episode {
 
     public void setLaunchDate(LocalDate launchDate) {
         this.launchDate = launchDate;
+    }
+
+    public Double getEvaluationNumber() {
+        return evaluationNumber;
+    }
+
+    public void setEvaluationNumber(Double evaluationNumber) {
+        this.evaluationNumber = evaluationNumber;
     }
 
     @Override
