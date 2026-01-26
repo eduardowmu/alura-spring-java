@@ -8,9 +8,11 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
@@ -32,6 +34,19 @@ public class ImportJobConfig {
                 .<Import, Import>chunk(200, this.transactionManager)
                 .reader(reader)
                 .writer(writer)
+                .build();
+    }
+
+    @Bean
+    public ItemReader<Import> reader() {
+        return new FlatFileItemReaderBuilder<Import>()
+                .name("csv-reader")
+                .resource(new FileSystemResource("files/dados.csv"))
+                .comments("--")
+                //indicar que está limitado por um caracter em comum
+                .delimited()
+                .names("cpf", "client", "birthDate", "show", "showDate", "typeEntry", "value")
+                .targetType(Import.class)
                 .build();
     }
 }
