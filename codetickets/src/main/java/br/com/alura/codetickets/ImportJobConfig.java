@@ -8,12 +8,18 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import javax.sql.DataSource;
+import java.time.LocalDateTime;
 
 @Configuration
 public class ImportJobConfig {
@@ -45,8 +51,22 @@ public class ImportJobConfig {
                 .comments("--")
                 //indicar que está limitado por um caracter em comum
                 .delimited()
+                //pois no arquivo, os dados são separados por ;
+                .delimiter(";")
                 .names("cpf", "client", "birthDate", "show", "showDate", "typeEntry", "value")
-                .targetType(Import.class)
+                //para fazer a conversão de string para data
+                .fieldSetMapper(new ImportMapper())
+                //.targetType(Import.class)
+                .build();
+    }
+
+    @Bean
+    public ItemWriter<Import> writer(DataSource dataSource) {
+        return new JdbcBatchItemWriterBuilder<Import>()
+                .dataSource(dataSource)
+                .sql("INSERT INTO import (cpf, client, birth_date, show, show_date, type_entry, value, import_registry)" +
+                        " VALUES (:cpf, :client, :birthDate, :show, :showDate, :typeEntry, :value, :importRegistry)")
+                .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .build();
     }
 }
