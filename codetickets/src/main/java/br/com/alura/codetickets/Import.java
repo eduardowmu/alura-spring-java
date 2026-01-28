@@ -20,6 +20,8 @@ public class Import {
     private Double value;
     private LocalDateTime importRegistry;
 
+    private Double admTax;
+
     public Long getId() {
         return id;
     }
@@ -90,5 +92,13 @@ public class Import {
 
     public void setImportRegistry(LocalDateTime importRegistry) {
         this.importRegistry = importRegistry;
+    }
+
+    public Double getAdmTax() {
+        return admTax;
+    }
+
+    public void setAdmTax(Double admTax) {
+        this.admTax = admTax;
     }
 }
