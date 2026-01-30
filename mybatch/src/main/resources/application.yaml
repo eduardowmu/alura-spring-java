@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: mybatch
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mybash_db
+    JdbcUrl: jdbc:postgresql://localhost:5432/mybash_db
+    username: postgres
+    password: admin
+  batch:
+    jdbc:
+      initialize-schema: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+  properties:
+    hibernate:
+      show_sql: true
