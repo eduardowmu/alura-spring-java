@@ -2,16 +2,26 @@ spring:
   application:
     name: mybatch
   datasource:
-    url: jdbc:postgresql://localhost:5432/mybash_db
-    JdbcUrl: jdbc:postgresql://localhost:5432/mybash_db
-    username: postgres
-    password: admin
+    postgres:
+      url: jdbc:postgresql://localhost:5432/mybash_db
+      JdbcUrl: jdbc:postgresql://localhost:5432/mybash_db
+      username: postgres
+      password: admin
+    mysql:
+      url: jdbc:mysql://localhost:3306/store?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      JdbcUrl: jdbc:mysql://localhost:3306/store?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      username: root
+      password:
   batch:
     jdbc:
       initialize-schema: always
+    job:
+      enabled: true
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   properties:
     hibernate:
       show_sql: true
+#  liquibase:
+#    enabled: false
