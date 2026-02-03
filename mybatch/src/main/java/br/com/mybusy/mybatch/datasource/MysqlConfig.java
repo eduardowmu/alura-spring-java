@@ -3,6 +3,8 @@ package br.com.mybusy.mybatch.datasource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -18,58 +20,40 @@ import java.util.Map;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "br.com.mybusy.db.db_core.repository",
+        basePackages = "br.com.mybusy.db.db_core.repository", // LIB
         entityManagerFactoryRef = "mysqlEntityManager",
         transactionManagerRef = "mysqlTransactionManager"
 )
 public class MysqlConfig {
 
     @Bean
-    @ConfigurationProperties("spring.datasource.mysql")
-    public DataSourceProperties mysqlProperties() {
-        return new DataSourceProperties();
+    @ConfigurationProperties(prefix = "spring.datasource.mysql")
+    public DataSource mysqlDataSource() {
+        return DataSourceBuilder.create().build();
     }
 
     @Bean
-    public DataSource mysqlDataSource() {
-        return mysqlProperties()
-                .initializeDataSourceBuilder()
+    public LocalContainerEntityManagerFactoryBean mysqlEntityManager(
+            EntityManagerFactoryBuilder builder) {
+
+        Map<String, Object> props = new HashMap<>();
+        props.put("hibernate.hbm2ddl.auto", "none");
+        props.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
+        props.put("hibernate.physical_naming_strategy",
+                "org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy");
+
+        return builder
+                .dataSource(mysqlDataSource())
+                .packages("br.com.mybusy.db.db_core.model")
+                .persistenceUnit("mysqlPU")
+                .properties(props)
                 .build();
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean mysqlEntityManager() {
-
-        LocalContainerEntityManagerFactoryBean emf =
-                new LocalContainerEntityManagerFactoryBean();
-
-        emf.setDataSource(mysqlDataSource());
-
-        emf.setPackagesToScan("br.com.mybusy.db.db_core.model");
-
-        emf.setPersistenceUnitName("mysqlPU");
-
-        HibernateJpaVendorAdapter vendorAdapter =
-                new HibernateJpaVendorAdapter();
-
-        emf.setJpaVendorAdapter(vendorAdapter);
-
-        Map<String, Object> props = new HashMap<>();
-
-        props.put("hibernate.physical_naming_strategy",
-                "org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy");
-
-        props.put("hibernate.implicit_naming_strategy",
-                "org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy");
-
-        emf.setJpaPropertyMap(props);
-
-        return emf;
-    }
-
-    @Bean
     public PlatformTransactionManager mysqlTransactionManager(
-            @Qualifier("mysqlEntityManager") EntityManagerFactory emf) {
+            @Qualifier("mysqlEntityManager")
+            EntityManagerFactory emf) {
 
         return new JpaTransactionManager(emf);
     }

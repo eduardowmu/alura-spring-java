@@ -14,6 +14,7 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.support.IteratorItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 @Configuration
@@ -36,12 +38,17 @@ public class ClientJobConfig {
     @Qualifier("pgTransactionManager")
     private final PlatformTransactionManager pgTransactionManager;
 
+    @Qualifier("mysqlEntityManager")
+    private final EntityManagerFactory mysqlEmf;
+
     @Autowired
     public ClientJobConfig(JobBuilderFactory jobBuilderFactory,
                            StepBuilderFactory stepBuilderFactory,
                            ClientRepository clientRepository,
                            MyClientRepository myClientRepository,
-                           ClientMapper clientMapper, PlatformTransactionManager pgTransactionManager) {
+                           ClientMapper clientMapper,
+                           PlatformTransactionManager pgTransactionManager,
+                           EntityManagerFactory mysqlEmf) {
 
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
@@ -49,17 +56,24 @@ public class ClientJobConfig {
         this.myClientRepository = myClientRepository;
         this.clientMapper = clientMapper;
         this.pgTransactionManager = pgTransactionManager;
+        this.mysqlEmf = mysqlEmf;
     }
 
     // ======================
     // READER
     // ======================
     @Bean
-    public ItemReader<Client> clientReader() {
+    public JpaPagingItemReader<Client> clientReader() {
 
-        List<Client> clients = clientRepository.findAll();
-        clients.size();
-        return new IteratorItemReader<>(clients);
+        JpaPagingItemReader<Client> reader = new JpaPagingItemReader<>();
+
+        reader.setEntityManagerFactory(mysqlEmf);
+
+        reader.setQueryString("SELECT c FROM Client c");
+
+        reader.setPageSize(100);
+
+        return reader;
     }
 
     // ======================

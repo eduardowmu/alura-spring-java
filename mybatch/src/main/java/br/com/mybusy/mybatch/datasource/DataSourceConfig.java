@@ -3,6 +3,7 @@ package br.com.mybusy.mybatch.datasource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,44 +15,46 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
-@Configuration
 @EnableJpaRepositories(
-        basePackages = "br.com.mybusy.mybatch.repository",
+        basePackages = "br.com.mybusy.mybatch.repository", // BATCH
         entityManagerFactoryRef = "pgEntityManager",
         transactionManagerRef = "pgTransactionManager"
 )
 public class DataSourceConfig {
     @Bean
-    @ConfigurationProperties("spring.datasource.postgres")
-    public DataSourceProperties postgresProperties() {
-        return new DataSourceProperties();
-    }
-
-    @Bean
     @Primary
+    @ConfigurationProperties(prefix = "spring.datasource.postgres")
     public DataSource postgresDataSource() {
-        return postgresProperties()
-                .initializeDataSourceBuilder()
-                .build();
+        return DataSourceBuilder.create().build();
     }
 
-    @Bean
     @Primary
+    @Bean
     public LocalContainerEntityManagerFactoryBean pgEntityManager(
             EntityManagerFactoryBuilder builder) {
+
+        Map<String, Object> props = new HashMap<>();
+        props.put("hibernate.hbm2ddl.auto", "update");
+        props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL10Dialect");
+        props.put("hibernate.physical_naming_strategy",
+                "org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy");
 
         return builder
                 .dataSource(postgresDataSource())
                 .packages("br.com.mybusy.mybatch.model")
-                .persistenceUnit("postgresPU")
+                .persistenceUnit("pgPU")
+                .properties(props)
                 .build();
     }
 
-    @Bean
     @Primary
+    @Bean
     public PlatformTransactionManager pgTransactionManager(
-            @Qualifier("pgEntityManager") EntityManagerFactory emf) {
+            @Qualifier("pgEntityManager")
+            EntityManagerFactory emf) {
 
         return new JpaTransactionManager(emf);
     }
