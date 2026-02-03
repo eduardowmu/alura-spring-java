@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @EnableJpaRepositories(
-        basePackages = "br.com.mybusy.mybatch.repository", // BATCH
+        basePackages = "br.com.mybusy.mybatch.repository", // <<< AQUI
         entityManagerFactoryRef = "pgEntityManager",
         transactionManagerRef = "pgTransactionManager"
 )
