@@ -11,6 +11,7 @@ public class Medico {
     private Long id;
     private String nome;
     private String email;
+    private String telefone;
     private String crm;
 
     @Enumerated(EnumType.STRING)
@@ -37,6 +38,14 @@ public class Medico {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 
     public void setEmail(String email) {
