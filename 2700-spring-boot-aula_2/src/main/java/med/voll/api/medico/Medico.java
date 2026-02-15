@@ -2,7 +2,9 @@ package med.voll.api.medico;
 
 import jakarta.persistence.*;
 import med.voll.api.endereco.Endereco;
+import org.hibernate.annotations.DynamicUpdate;
 
+@DynamicUpdate
 @Table(name = "medicos")
 @Entity(name = "Medico")
 public class Medico {
@@ -19,6 +21,8 @@ public class Medico {
 
     @Embedded
     private Endereco endereco;
+
+    private boolean ativo;
 
     public Long getId() {
         return id;
@@ -74,5 +78,13 @@ public class Medico {
 
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 }

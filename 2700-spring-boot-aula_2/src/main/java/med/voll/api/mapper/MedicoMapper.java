@@ -9,8 +9,19 @@ import org.mapstruct.Mapping;
 public interface MedicoMapper {
     @Mapping(source = "nome", target = "nome")
     @Mapping(source = "email", target = "email")
+    @Mapping(source = "telefone", target = "telefone")
     @Mapping(source = "crm", target = "crm")
     @Mapping(source = "especialidade", target = "especialidade")
     @Mapping(source = "endereco", target = "endereco")
+    @Mapping(source = "ativo", target = "ativo")
     Medico toMedico(DadosCadastroMedico dadosCadastroMedico);
+
+    @Mapping(source = "nome", target = "nome")
+    @Mapping(source = "email", target = "email")
+    @Mapping(source = "telefone", target = "telefone")
+    @Mapping(source = "crm", target = "crm")
+    @Mapping(source = "especialidade", target = "especialidade")
+    @Mapping(source = "endereco", target = "endereco")
+    @Mapping(source = "ativo", target = "ativo")
+    DadosCadastroMedico toDadosMedico(Medico medico);
 }
