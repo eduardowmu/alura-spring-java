@@ -1,5 +1,6 @@
 package med.voll.api.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import med.voll.api.mapper.MedicoMapper;
@@ -69,9 +70,18 @@ public class MedicoController {
         return ResponseEntity.ok(medicos);
     }
 
+    @GetMapping("/{crm}")
+    public ResponseEntity detail(@PathVariable String crm) {
+        Medico medico = this.medicoRepository.findByCrm(crm)
+                .orElseThrow(() -> new EntityNotFoundException("Médico {crm} não encontrado"));
+        return ResponseEntity.ok(this.medicoMapper.toDadosMedico(medico));
+    }
+
+    @Transactional
     @DeleteMapping("/{crm}")
     public ResponseEntity delete(@PathVariable("crm") String crm) {
-        Medico medico = this.medicoRepository.findByCrm(crm).orElseThrow(() -> new NoSuchElementException("Medico não encontrado"));
+        Medico medico = this.medicoRepository.findByCrm(crm)
+                .orElseThrow(() -> new NoSuchElementException("Medico não encontrado"));
         //this.medicoRepository.delete(medico);
         medico.setAtivo(false);
         this.medicoRepository.save(medico);
