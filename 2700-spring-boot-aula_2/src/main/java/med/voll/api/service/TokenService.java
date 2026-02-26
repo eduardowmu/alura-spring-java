@@ -3,6 +3,7 @@ package med.voll.api.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import med.voll.api.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,16 @@ public class TokenService {
                 .withExpiresAt(this.expireDate())
                 .sign(algorithm);
     }
+
+    public String getSubject(String tokenJWT) throws JWTVerificationException {
+        var algoritmo = Algorithm.HMAC256(this.secret);
+        return JWT.require(algoritmo)
+                .withIssuer("API Voll.med")
+                .build()
+                .verify(tokenJWT)
+                .getSubject();
+    }
+
 
     private Instant expireDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
