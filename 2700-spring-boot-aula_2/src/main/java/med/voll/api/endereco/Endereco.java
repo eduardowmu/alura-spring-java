@@ -1,5 +1,6 @@
 package med.voll.api.endereco;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Embeddable;
 
 @Embeddable

@@ -24,6 +24,17 @@ public class Medico {
 
     private boolean ativo;
 
+    public Medico(Long id, String nome, String email, String telefone, String crm, Especialidade especialidade, Endereco endereco, boolean ativo) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.telefone = telefone;
+        this.crm = crm;
+        this.especialidade = especialidade;
+        this.endereco = endereco;
+        this.ativo = ativo;
+    }
+
     public Long getId() {
         return id;
     }

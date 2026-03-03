@@ -2,6 +2,7 @@ package med.voll.api.repository;
 
 import med.voll.api.consulta.Consulta;
 import med.voll.api.endereco.DadosEndereco;
+import med.voll.api.endereco.Endereco;
 import med.voll.api.mapper.MedicoMapper;
 import med.voll.api.mapper.PacienteMapper;
 import med.voll.api.medico.DadosCadastroMedico;
@@ -28,10 +29,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 class MedicoRepositoryTest {
-    @Autowired
-    private MedicoMapper medicoMapper;
-    @Autowired
-    private PacienteMapper pacienteMapper;
     @Autowired
     private MedicoRepository medicoRepository;
     @Autowired
@@ -71,17 +68,20 @@ class MedicoRepositoryTest {
         entityManager.persist(new Consulta(null, medico, paciente, data));
     }
 
-    private Medico cadastrarMedico(String nome, String email,
-                                   String crm, Especialidade especialidade) {
+    private Medico cadastrarMedico(String nome, String email, String crm, Especialidade especialidade) {
         DadosCadastroMedico dadosCadastroMedico = dadosMedico(nome, email, crm, especialidade);
-        var medico = this.medicoMapper.toMedico(dadosCadastroMedico);
+        DadosEndereco dadosEndereco = dadosEndereco();
+        Endereco endereco = endereco(dadosEndereco);
+        Medico medico = new Medico(null, nome, email, "", crm, especialidade, endereco, true);//this.medicoMapper.toMedico(dadosCadastroMedico);
         entityManager.persist(medico);
         return medico;
     }
 
     private Paciente cadastrarPaciente(String nome, String email, String cpf) {
         DadosCadastroPaciente dadosCadastroPaciente = dadosPaciente(nome, email, cpf);
-        var paciente = this.pacienteMapper.toPaciente(dadosCadastroPaciente);
+        DadosEndereco dadosEndereco = dadosEndereco();
+        Endereco endereco = this.endereco(dadosEndereco);
+        Paciente paciente = new Paciente(null, nome, email, cpf, "", endereco);//this.pacienteMapper.toPaciente(dadosCadastroPaciente);
         entityManager.persist(paciente);
         return paciente;
     }
@@ -116,8 +116,20 @@ class MedicoRepositoryTest {
                 "00000000",
                 "Brasilia",
                 "DF",
-                null,
-                null
+                "",
+                ""
         );
+    }
+
+    private Endereco endereco(DadosEndereco dadosEndereco) {
+        Endereco endereco = new Endereco();
+        endereco.setLogradouro(dadosEndereco.logradouro());
+        endereco.setBairro(dadosEndereco.bairro());
+        endereco.setCep(dadosEndereco.cep());
+        endereco.setNumero(dadosEndereco.numero());
+        endereco.setComplemento(dadosEndereco.complemento());
+        endereco.setCidade(dadosEndereco.cidade());
+        endereco.setUf(dadosEndereco.uf());
+        return endereco;
     }
 }

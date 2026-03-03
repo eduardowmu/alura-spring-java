@@ -18,6 +18,15 @@ public class Paciente {
     @Embedded
     private Endereco endereco;
 
+    public Paciente(Long id, String nome, String email, String cpf, String telefone, Endereco endereco) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.cpf = cpf;
+        this.telefone = telefone;
+        this.endereco = endereco;
+    }
+
     public Long getId() {
         return id;
     }
