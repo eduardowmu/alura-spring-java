@@ -6,6 +6,7 @@ import br.edu.invdep.validators.ProductValidators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.ProviderNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +21,10 @@ public class ValidatorServiceImpl implements ValidatorService {
         List<String> validators = new ArrayList<>();
         if(entity.equalsIgnoreCase("client")) {
             this.clientValidators.forEach(c -> c.list(validators));
-        } else {
+        } else if(entity.equalsIgnoreCase("product")){
             this.productValidators.forEach(p -> p.list(validators));
+        } else {
+            throw new ProviderNotFoundException("Tipo de entidade não encontrada");
         }
         return validators;
     }
