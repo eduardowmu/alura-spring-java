@@ -1,0 +1,32 @@
+package med.voll.api.controller;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import med.voll.api.mapper.PacienteMapper;
+import med.voll.api.paciente.DadosCadastroPaciente;
+import med.voll.api.paciente.Paciente;
+import med.voll.api.repository.PacienteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/pacientes")
+@SecurityRequirement(name = "bearer-key")
+public class PacienteController {
+
+    @Autowired
+    private PacienteRepository repository;
+    @Autowired
+    private PacienteMapper pacienteMapper;
+
+    @PostMapping
+    @Transactional
+    public void cadastrar(@RequestBody @Valid DadosCadastroPaciente dados) {
+        repository.save(this.pacienteMapper.toPaciente(dados));
+    }
+
+}

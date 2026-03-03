@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ConsultaMapper {
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "idPaciente", target = "consulta.medico.id")
-    @Mapping(source = "dateTime", target = "consulta.data")
+    @Mapping(source = "paciente.id", target = "idPaciente")
+    @Mapping(source = "data", target = "dateTime")
     DadosDetalhamentoConsulta toDadosDetalhamentoConsulta(Consulta consulta);
 }
