@@ -1,20 +1,24 @@
 package br.edu.alura.bookroom.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
+@DynamicUpdate
 @Entity
 @Table
-public class Reserva {
+public class Reserva implements ModelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
-    private List<Usuario> usuarios;
+    @Column(unique = true)
+    private String codigo;
+    @OneToOne
+    private Usuario usuario;
     @OneToOne
     private Sala sala;
+
+    private Integer capacidade;
     private LocalDateTime inicio;
     private LocalDateTime fim;
 
@@ -26,12 +30,20 @@ public class Reserva {
         this.id = id;
     }
 
-    public List<Usuario> getUsuarios() {
-        return usuarios;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public Sala getSala() {
@@ -40,6 +52,14 @@ public class Reserva {
 
     public void setSala(Sala sala) {
         this.sala = sala;
+    }
+
+    public Integer getCapacidade() {
+        return capacidade;
+    }
+
+    public void setCapacidade(Integer capacidade) {
+        this.capacidade = capacidade;
     }
 
     public LocalDateTime getInicio() {
